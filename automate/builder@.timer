@@ -1,0 +1,10 @@
+# /etc/systemd/system/builder@.timer
+[Unit]
+Description=Run arepobuilder nightly
+
+[Timer]
+OnCalendar=*-*-* 3:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target 

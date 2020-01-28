@@ -1,0 +1,11 @@
+# /etc/systemd/system/builder@.service
+[Unit]
+Description=builder
+After=screen@kalinda.service
+
+[Service]
+Type=idle
+User=%i
+ExecStart=/build/build/run-repobuild.sh
+ExecStop=/usr/bin/killall run-repobuild.sh
+RemainAfterExit=no
