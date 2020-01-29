@@ -11,7 +11,7 @@ This may be coded very poorly. I started writing this to maintain my [own custom
 ## Okay, I get it! Let's go to the Getting Started section already!
 Before we get to using ARB, here's some things you should have installed and setup:
 ### Requirements:
-- Everything needed to compile packages (build-devel, for example)
+- Everything needed to compile packages (`base-devel`, for example)
 - [A clean Chroot](https://wiki.archlinux.org/index.php/DeveloperWiki:Building_in_a_clean_chroot) (we'll be compiling packages here to keep things seperate from the system)
 - `sudo` (more on this later)
 - `git` (the AUR uses this)
@@ -25,11 +25,11 @@ Before we get to using ARB, here's some things you should have installed and set
 - [Knockd](https://wiki.archlinux.org/index.php/Port_knocking) (ARB supports port knocking if you use it on your web server)
 
 ### Using sudo
-If you don't want to be constantly prompted for a password whenever makechrootpkg is run, add the following to your sudoers file in the User Privledge section:
+If you don't want to be constantly prompted for a password whenever `makechrootpkg` is run, add the following to your `sudoers` file in the User Privledge section, with your user in place of `*username*`:
 
 ```
 # run makechrootpkg for building packages without password
-yourusername ALL = (root) NOPASSWD: /usr/bin/makechrootpkg
+*username* ALL = (root) NOPASSWD: /usr/bin/makechrootpkg
 ```
 
 This allows you to run this command without your root password, which I figure should be safe enough since it's inside the chroot and therefore isolated from your real system.
