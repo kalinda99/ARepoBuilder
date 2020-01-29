@@ -2,18 +2,15 @@
 # This script contains all functions and variables and is sourced by other scripts
 
 # export variables so other scripts can use them
-export ARB=$(basename "$PWD")
-source $ARB/repodir.sh
-source $repodir/vars.sh # read user variables file
+export ARB=$(pwd)
+source $ARB/vars.sh # read user variables file
 export logs=$repodir/logs # Defines path to logs folder
 export aur="https://aur.archlinux.org"
 export CHROOT=/build/chroot
 aur_url="https://aur.archlinux.org/packages"
 pkgname=$(basename "$PWD") # Defines the current directory name without path, which is the name of the pkg
-export sitedir=~/Web-Deving/aur-andontie
-sitepath=/home/yori/aur/
 export date=$(date)
-export dirlist=$(find $builddir -maxdepth 1 -type d \( ! -name . \) | sort)
+dirlist=$(find $builddir -maxdepth 1 -type d \( ! -name . \) | sort)
 
 if [[ $keychain = "true" ]]; then
   eval `keychain --noask --eval $keyname` # use keychain so we don't need to enter a password for our server
@@ -139,7 +136,6 @@ function rbdb {
 # Function to run rsync for uploading packages
 function upload {
   printf "\nUploading on $date...\n"
-  # knock -v -d 300 $server 7506 6323 3096 8769
   knock-andontie
   rsync -rulgvz -e "ssh -p $port" --progress --delete $pkgdir/ $address:$sshpath | tee -a $logs/upload.log
 }

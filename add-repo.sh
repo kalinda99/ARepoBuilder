@@ -7,8 +7,8 @@ read reponame
 while true; do
     read -p "You have chosen $reponame as your reponame. Are you sure you want this? Y/n? You can also type A to abort and exit for now." yna
         case $yna in
-            [Yy]* ) echo "export reponame=$reponame" >> $ARB/repodir.sh
-                    chmod +x $ARB/repodir.sh
+            [Yy]* ) echo "export reponame=$reponame" >> $ARB/vars.sh
+                    chmod +x $ARB/vars.sh
                     break;;
             [Nn]* ) read -p "Name of your repo?" reponame; continue;;
             [Aa]* ) echo Understood, have a nice day.; exit;;
@@ -29,9 +29,7 @@ while true; do
                     mkdir $repodir/pkgs
                     echo "export repodir=$repodir" >> $ARB/vars.sh
                     echo "export pkgdir=$repodir/pkgs" >> $ARB/vars.sh
-                    echo "export builddir=$repodir/build" >> $ARB/vars.sh
-                    echo "vars.sh, which will contain your variables, has been created in $repodir :) You can modify it at any time."
-                    chmod +x $repodir/vars.sh; break;;
+                    echo "export builddir=$repodir/build" >> $ARB/vars.sh; break;;
             [Nn]* ) read -p "Your repo path?" builddir; continue;;
             [Aa]* ) echo Understood, have a nice day.; exit;;
             * ) echo Huh? Please choose either Y, N, or A.; continue;;
@@ -67,7 +65,7 @@ if [ $source = "1" ]; then
     while true; do
         read -p "You've entered port $port for your SSH server. Is this dorrect? " yna
         case $yna in
-            [Yy]* ) echo "export port=$port" >> $repodir/vars.sh; break;;
+            [Yy]* ) echo "export port=$port" >> $ARB/vars.sh; break;;
             [Nn]* ) read -p "Your port number?" port; continue;;
             [Aa]* ) echo Understood, have a nice day.; exit;;
             * ) echo Huh? Please choose either Y, N, or A.; continue;;
@@ -78,7 +76,7 @@ if [ $source = "1" ]; then
     while true; do
         read -p "You've entered $address for your SSH address, is this correct? "
         case $yna in
-            [Yy]* ) echo "export address='$address'" >> $repodir/vars.sh; break;;
+            [Yy]* ) echo "export address='$address'" >> $ARB/vars.sh; break;;
             [Nn]* ) read -p "What is your SSH address?" address; continue;;
             [Aa]* ) echo Understood, have a nice day.; exit;;
             * ) echo Huh? Please choose either Y, N, or A.; continue;;
@@ -89,10 +87,10 @@ if [ $source = "1" ]; then
     read -p "Have you setup keychain for SSH agent? " yna
     case $yna in
         [Yy]* ) echo "Good choice!"
-                echo "export keychain='true'" >> $repodir/vars.sh
+                echo "export keychain='true'" >> $ARB/vars.sh
                 keychain="true"; break;;
         [Nn]* ) echo "Cool, you can always set it up yourself by changing the keychain variable in $ARB/               vars.sh to true and adding a variable for keyname."
-                echo "export keychain='false'" >> $repodir/vars.sh
+                echo "export keychain='false'" >> $ARB/vars.sh
                 keychain="false"; break;;
         [Aa]* ) echo "Alirghty, see you!"; exit;;
         * ) echo "Huh? I need either y/n or a to abort."; continue;;
@@ -105,7 +103,7 @@ if [ $source = "1" ]; then
         while true; do
         read -p "You've entered $keyname, is this correct? "
         case $yna in
-            [Yy]* ) echo "export keyname='$keyname'" >> $repodir/vars.sh; break;;
+            [Yy]* ) echo "export keyname='$keyname'" >> $ARB/vars.sh; break;;
             [Nn]* ) read -p "What is your SSH key file name? It's located in $HOME/.ssh by default. If you put it somewhere else, you MUST include the path." keyname; continue;;
             [Aa]* ) echo Understood, have a nice day.; exit;;
             * ) echo Huh? Please choose either Y, N, or A.; continue;;
@@ -117,7 +115,7 @@ if [ $source = "1" ]; then
     while true; do
         read -p "You've entered $sshpath. Is this right? "
         case $yna in
-            [Yy]* ) echo "export sshpath=$sshpath" >> $repodir/vars.sh; break;;
+            [Yy]* ) echo "export sshpath=$sshpath" >> $ARB/vars.sh; break;;
             [Nn]* ) read -p "What is your SSH path?" sshpath; continue;;
             [Aa]* ) echo "Understood, have a nice day."; exit;;
             * ) echo "Huh? Please choose either Y, N, or A."; continue;;
@@ -131,7 +129,7 @@ elif [ $source = "2" ]; then
     while true; do
         read -p "You've entered $local for your repo path. Is this dorrect? " yna
         case $yna in
-            [Yy]* ) echo "export path=$local" >> $repodir/vars.sh; break;;
+            [Yy]* ) echo "export path=$local" >> $ARB/vars.sh; break;;
             [Nn]* ) read -p "Your repo path?" port; continue;;
             [Aa]* ) echo "Understood, have a nice day."; exit;;
             * ) echo "Huh? Please choose either Y, N, or A."; continue;;

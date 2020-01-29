@@ -1,6 +1,6 @@
 #!/bin/bash
-export ARB=$(basename "$PWD")
-source include.sh # Call the include script so we can use our functions and variables
+export ARB=$(pwd)
+source $ARB/include.sh # Call the include script so we can use our functions and variables
 
 # welcome and present list of options
 echo "Hello, welcome to A Repo Builder, glad you're here! Please choose from the following options so we can get started:"
