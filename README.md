@@ -25,11 +25,11 @@ Before we get to using ARB, here's some things you should have installed and set
 - [Knockd](https://wiki.archlinux.org/index.php/Port_knocking) (ARB supports port knocking if you use it on your web server)
 
 ### Using sudo
-If you don't want to be constantly prompted for a password whenever `makechrootpkg` is run, add the following to your `sudoers` file in the User Privledge section, with your user in place of `*username*`:
+If you don't want to be constantly prompted for a password whenever `makechrootpkg` is run, add the following to your `sudoers` file in the User Privledge section, with your user in place of `username`:
 
 ```
 # run makechrootpkg for building packages without password
-*username* ALL = (root) NOPASSWD: /usr/bin/makechrootpkg
+username ALL = (root) NOPASSWD: /usr/bin/makechrootpkg
 ```
 
 This allows you to run this command without your root password, which I figure should be safe enough since it's inside the chroot and therefore isolated from your real system.
