@@ -1,5 +1,5 @@
 #!/bin/bash
-source $builddir/include.sh # Call the include script so we can use our functions and variables
+source $(pwd)/include.sh # Call the include script so we can use our functions and variables
 export ckupdate=true
 export firstbuild=false
 date=$(date)
