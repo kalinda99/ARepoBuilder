@@ -19,7 +19,6 @@ else
 
     if [[ $np = 2 ]] ; then
         echo "TODO"
-        #source $builddir/add-other.sh
     fi
 
     if [[ $np = 3 ]] ; then
@@ -35,7 +34,7 @@ else
             case $yn in
                 [Yy]* ) exec 3<"$file" # Uses 3 to run the file inputs so you can still take regular inputs and thus be able to let makepkg install depends, courtesy of https://stackoverflow.com/a/35131166
                         while read -r -u 3 line; do
-                            ## need to update this to match with new way of doing things, use $line
+                            ( cd $line && sh $ARB/build.sh )    
                         done
                         echo "Syncing with SSH server..."
                         upload

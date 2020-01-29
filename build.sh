@@ -14,12 +14,12 @@ if [ "$ckupdate" = true ]; then #if update var is set to true then check for upd
       echo Starting makepkg...
       mkpkg
 
-      if [[ $? -eq 0 ]]; then
+      if [[ $? -eq 0 ]]; then      
         sigpkg
 
         if [[ $? -eq 0 ]]; then
           echo "Package signed :)"
-          if [ $firstbuild = false ]; then
+          if [ "$firstbuild" = false ]; then
             rmold
           fi
           echo "Moving pkg to repo folder..."

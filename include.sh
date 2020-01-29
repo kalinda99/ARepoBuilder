@@ -53,18 +53,33 @@ function rmold {
   if [ 'tsmuxer-ng-bin' == $pkgname ]; then
     for pkg in "${array[@]}"
     do
-        echo "Removing old version of $pkg..."
-        rm $pkgdir/$pkg*.pkg.tar.xz*
+        if [[ "$trash" = true ]]; then
+          echo "Removing old version of $pkg..."
+          trash-put $pkgdir/$pkg*.pkg.tar.xz*
+        else
+          echo "Removing old version of $pkg..."
+          rm $pkgdir/$pkg*.pkg.tar.xz*
+        fi
     done
 
   # This is needed because the obs-ndi built package name doesn't have -bin at the end :|
   elif [ 'obs-ndi-bin' == $pkgname ]; then
-    echo "Removing old version of $pkg..."
-    rm $pkgdir/obs-ndi*.pkg.tar.xz*
+    if [[ "$trash" = true ]]; then
+      echo "Removing old version of $pkg..."
+      trash-put $pkgdir/obs-ndi*.pkg.tar.xz*
+    elif [[ "$trash" = false ]]
+      echo "Removing old version of $pkg..."
+      rm $pkgdir/obs-ndi*.pkg.tar.xz*
+    fi
 
   else
-    echo "Removing old version of $pkgname..."
-    rm $pkgdir/$pkgname*.pkg.tar*
+    if [[ "$trash" = true ]]; then
+      echo "Removing old version of $pkg..."
+      trash-put $pkgdir/$pkg*.pkg.tar.xz*
+    elif [[ "$trash" = false ]]
+      echo "Removing old version of $pkg..."
+      rm $pkgdir/$pkg*.pkg.tar.xz*
+    fi
   fi
 }
 
@@ -125,7 +140,7 @@ function rbdb {
 # Function to run rsync for uploading packages
 function upload {
   printf "\nUploading on $date...\n"
-  if [[ $knockon = true ]]; then
+  if [[ "$knockon" = true ]]; then
     knock-ssh
   fi
   rsync -rulgvz -e "ssh -p $port" --progress --delete $pkgdir/ $address:$sshpath | tee -a $logs/upload.log
@@ -156,7 +171,7 @@ function listupdate {
   sed -i -e '25s@<li>.*$@'"<li><a href="$aur_url/${novers[6]}" target="_blank">${plist[6]}</a></li>"'@' -e '26s@<li>.*$@'"<li><a href="$aur_url/${novers[5]}" target="_blank">${plist[5]}</a></li>"'@' -e '27s@<li>.*$@'"<li><a href="$aur_url/${novers[4]}" target="_blank">${plist[4]}</a></li>"'@' -e '28s@<li>.*$@'"<li><a href="$aur_url/${novers[3]}" target="_blank">${plist[3]}</a></li>"'@' -e'29s@<li>.*$@'"<li><a href="$aur_url/${novers[2]}" target="_blank">${plist[2]}</a></li>"'@' -e '30s@<li>.*$@'"<li><a href="$aur_url/${novers[1]}" target="_blank">${plist[1]}</a></li>"'@' -e '31s@<li>.*$@'"<li><a href="$aur_url/${novers[0]}" target="_blank">${plist[0]}</a></li>"'@' $sitedir/index.html
 
   # upload new index.html file to server
-  if [[ $knockon = true ]]; then
+  if [[ "$knockon" = true ]]; then
     knock-ssh
   fi
   scp -P $port $sitedir/index.html $address:$sitepath

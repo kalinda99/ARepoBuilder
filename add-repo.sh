@@ -5,7 +5,7 @@ echo
 echo The name of your repo?
 read reponame
 while true; do
-    read -p "You have chosen $reponame as your reponame. Are you sure you want this? Y/n? You can also type A to abort and exit for now." yna
+    read -p "You have chosen $reponame as your reponame. Are you sure you want this? Y/n? You can also type A to abort and exit for now. " yna
         case $yna in
             [Yy]* ) echo "export reponame=$reponame" >> $ARB/vars.sh; break;;
             [Nn]* ) read -p "Name of your repo?" reponame; continue;;
@@ -49,7 +49,7 @@ case $source in
     echo "You've chosen to use a path on $HOSTNAME, cool!"; break;;
     3)
     echo "Understood!"
-    source $buildir/arepobuilder; break;;
+    source $ARB/arepobuilder; break;;
     4)
     echo Understood, have a nice day!; exit;;
     *)
@@ -120,16 +120,31 @@ if [ $source = "1" ]; then
         esac
     done
 
-    echo "Okay, almost done now! Lastly, are you using port knocking to access your remote server? If so, I'm going to need to know the ports"
-    read sshpath
     while true; do
-        read -p "You've entered $sshpath. Is this right? "
+        read -p "Okay, almost done now! Lastly, are you using port knocking to access your remote server? "
         case $yna in
-            [Yy]* ) echo "export sshpath=$sshpath" >> $ARB/vars.sh; break;;
-            [Nn]* ) read -p "What is your SSH path?" sshpath; continue;;
+            [Yy]* ) echo "Nice, now I'm going to need to know your ports."
+                    echo "export knockon=true" >> $ARB/vars.sh; break;;
+            [Nn]* ) echo "Awesome! Then that concludes the setup! Thanks for using ARB! Returning to the main         menu..."
+                    echo "export knockon=false" >> $ARB/vars.sh
+                    source $ARB/arepobuilder; break;;
             [Aa]* ) echo "Understood, have a nice day."; exit;;
             * ) echo "Huh? Please choose either Y, N, or A."; continue;;
         esac
+    done
+
+    echo "Please enter your ports below, seperated by spaces: "
+    read knockports
+    while true; do
+        read -p "You entered $knockports for your ports, are they correct? "
+        case "$yna" in
+            [Yy]* ) echo "Thanks very much, that concludes the setup! Taking you back to the main menu..."
+                    echo "export knockports='$knockports'" >> $ARB/vars.sh
+                    source $ARB/arepobuilder; break;;
+            [Nn]* ) read -p "Please enter your ports seperated by spaces. " knockports
+            [Aa]* ) echo "Understood, have a nice day."; exit;;
+            * ) echo "Huh? Please choose either Y, N, or A."; continue;;
+        esac        
     done
 
 # The section below isn't really done yet.

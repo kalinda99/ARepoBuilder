@@ -21,7 +21,6 @@ read option # read user input
     export ckupdate=true
     export firstbuild=false
     execbuild
-    # find . -maxdepth 1 -type d \( ! -name . \) -exec bash -c "cd '{}' && sh build.sh" \;
     upload; break;;
     3)
     source $ARB/rebuild.sh; break;;

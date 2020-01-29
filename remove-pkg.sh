@@ -70,9 +70,15 @@ if [ $option = "1" ]; then
     # Now do the work on the pkg folder
     printf "Cool, You've chosen \`%s'. I will remove this package for you.\n" "${pkgarray[choice]}"
     echo "Removing package from local folders..."
-    rm $pkgdir/${pkgarray[choice]}*.pkg.tar.xz
-    echo "Removing ${pkgarray[choice]}'s build folder..."
-    rm -rf ${pkgarray[choice]}
+    if [[ "$trash" = true ]]; then
+        trash-put $pkgdir/${pkgarray[choice]}*.pkg.tar.xz
+        echo "Removing ${pkgarray[choice]}'s build folder..."
+        trash-put -d ${pkgarray[choice]}        
+    elif [[ "$trash" = false ]]
+        rm $pkgdir/${pkgarray[choice]}*.pkg.tar.xz
+        echo "Removing ${pkgarray[choice]}'s build folder..."
+        rm -rf ${pkgarray[choice]}
+    fi
     echo "Removing from repo database..."
     repo-remove -s -v $pkgdir/$reponame*.db.tar.gz ${pkgarray[choice]}
     echo "Syncing remote server..."
@@ -87,7 +93,11 @@ elif [ $option = "2" ]; then
         read -p "You've enetered $name for deletion. This will remove this package from the repo database and your local repo folder. Are you sure you want to do this?" yna
         case $yna in
             [Yy]* ) echo "Removing package from local folder..."
-                    rm $pkgdir/$name*.pkg.tar.xz
+                    if [[ "$trash" = true ]]; then
+                        trash-put $pkgdir/$name*.pkg.tar.xz
+                    elif [[ "$trash" = false ]]; then
+                        rm $pkgdir/$name*.pkg.tar.xz
+                    fi
                     echo "Removing from repo database..."
                     repo-remove $pkgdir/$reponame*.db.tar.gz $name
                     echo "All done! $name is no longer in your repo!"; break;;
