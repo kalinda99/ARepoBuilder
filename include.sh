@@ -48,17 +48,6 @@ function checkpkg {
   fi
 }
 
-# Copy build.sh file to all folders
-# function mklink {
-#   for i in ./* # iterate over all files in current dir
-#   do
-#       if [ -d "$i" ] # if it's a directory
-#       then
-#           ln build.sh "$i" # link script into it
-#       fi
-#   done
-# }
-
 # remove the old package
 function rmold {
   if [ 'tsmuxer-ng-bin' == $pkgname ]; then
@@ -136,7 +125,9 @@ function rbdb {
 # Function to run rsync for uploading packages
 function upload {
   printf "\nUploading on $date...\n"
-  knock-andontie
+  if [[ $knockon = true ]]; then
+    knock-ssh
+  fi
   rsync -rulgvz -e "ssh -p $port" --progress --delete $pkgdir/ $address:$sshpath | tee -a $logs/upload.log
 }
 
@@ -161,11 +152,13 @@ function listupdate {
   updated=$(cat updated.txt | sed 's/\s.*$//' | tr "\n" " ")
   read -r -a novers <<< "$updated"
 
-  # make edits to index.html with newly updated package list
+  # make edits to index.html with newly updated package list, the numbers (25s, etc) correspond to their lines in the index.html file. Modify the code below accordinly to use it to update your own website.
   sed -i -e '25s@<li>.*$@'"<li><a href="$aur_url/${novers[6]}" target="_blank">${plist[6]}</a></li>"'@' -e '26s@<li>.*$@'"<li><a href="$aur_url/${novers[5]}" target="_blank">${plist[5]}</a></li>"'@' -e '27s@<li>.*$@'"<li><a href="$aur_url/${novers[4]}" target="_blank">${plist[4]}</a></li>"'@' -e '28s@<li>.*$@'"<li><a href="$aur_url/${novers[3]}" target="_blank">${plist[3]}</a></li>"'@' -e'29s@<li>.*$@'"<li><a href="$aur_url/${novers[2]}" target="_blank">${plist[2]}</a></li>"'@' -e '30s@<li>.*$@'"<li><a href="$aur_url/${novers[1]}" target="_blank">${plist[1]}</a></li>"'@' -e '31s@<li>.*$@'"<li><a href="$aur_url/${novers[0]}" target="_blank">${plist[0]}</a></li>"'@' $sitedir/index.html
 
   # upload new index.html file to server
-  knock -v -d 300 $server 7506 6323 3096 8769
+  if [[ $knockon = true ]]; then
+    knock-ssh
+  fi
   scp -P $port $sitedir/index.html $address:$sitepath
 
   rm updated.txt

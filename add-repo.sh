@@ -7,9 +7,7 @@ read reponame
 while true; do
     read -p "You have chosen $reponame as your reponame. Are you sure you want this? Y/n? You can also type A to abort and exit for now." yna
         case $yna in
-            [Yy]* ) echo "export reponame=$reponame" >> $ARB/vars.sh
-                    chmod +x $ARB/vars.sh
-                    break;;
+            [Yy]* ) echo "export reponame=$reponame" >> $ARB/vars.sh; break;;
             [Nn]* ) read -p "Name of your repo?" reponame; continue;;
             [Aa]* ) echo Understood, have a nice day.; exit;;
             * ) echo Huh? Please choose either Y, N, or A.; continue;;
@@ -84,12 +82,12 @@ if [ $source = "1" ]; then
     done
 
     while true; do
-    read -p "Have you setup keychain for SSH agent? " yna
+    read -p "Have you setup keychain for SSH? " yna
     case $yna in
         [Yy]* ) echo "Good choice!"
                 echo "export keychain='true'" >> $ARB/vars.sh
                 keychain="true"; break;;
-        [Nn]* ) echo "Cool, you can always set it up yourself by changing the keychain variable in $ARB/               vars.sh to true and adding a variable for keyname."
+        [Nn]* ) echo "Cool, you can always set it up yourself by changing the keychain variable in $ARB/              vars.sh to true and adding a variable for keyname."
                 echo "export keychain='false'" >> $ARB/vars.sh
                 keychain="false"; break;;
         [Aa]* ) echo "Alirghty, see you!"; exit;;
@@ -110,7 +108,19 @@ if [ $source = "1" ]; then
         esac
     fi
 
-    echo "Okay, almost done now! Lastly, I am going to need the FULL PATH to your repo on your SSH server, entered like a normal Linux path. Please enter it below."
+    echo "I am now going to need the FULL PATH to your repo on your SSH server, entered like a normal Linux path. Please enter it below."
+    read sshpath
+    while true; do
+        read -p "You've entered $sshpath. Is this right? "
+        case $yna in
+            [Yy]* ) echo "export sshpath=$sshpath" >> $ARB/vars.sh; break;;
+            [Nn]* ) read -p "What is your SSH path?" sshpath; continue;;
+            [Aa]* ) echo "Understood, have a nice day."; exit;;
+            * ) echo "Huh? Please choose either Y, N, or A."; continue;;
+        esac
+    done
+
+    echo "Okay, almost done now! Lastly, are you using port knocking to access your remote server? If so, I'm going to need to know the ports"
     read sshpath
     while true; do
         read -p "You've entered $sshpath. Is this right? "
