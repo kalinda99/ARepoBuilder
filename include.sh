@@ -6,13 +6,13 @@ export ARB=$(pwd)
 source $ARB/vars.sh # read user variables file
 export logs=$repodir/logs # Defines path to logs folder
 export aur="https://aur.archlinux.org"
-export CHROOT=/build/chroot
+export CHROOT=$repodir/chroot
 aur_url="https://aur.archlinux.org/packages"
 pkgname=$(basename "$PWD") # Defines the current directory name without path, which is the name of the pkg
 export date=$(date)
 dirlist=$(find $builddir -maxdepth 1 -type d \( ! -name . \) | sort)
 
-if [[ $keychain = "true" ]]; then
+if [ $keychain = true ]; then
   eval `keychain --noask --eval $keyname` # use keychain so we don't need to enter a password for our server
 fi
 

@@ -13,10 +13,11 @@ done
 while true; do # ask if user wants to build and upload the pkg now
   read -p "Do you want to build these packages and add them to your repo now? " yn
   case $yn in
-      [Yy]* ) export ckupdate="false" && export firstbuild="true"
+      [Yy]* ) export ckupdate=false
+              export firstbuild=true
               for pkg in "${yourlist[@]}"; do
                 echo "Adding build script to package folder..."                
-                execbuild
+                ( cd $builddir/$pkg && sh $ARB/build.sh )
                 echo "Syncing with SSH server..."
                 upload
                 listupdate

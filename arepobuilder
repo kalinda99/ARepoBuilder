@@ -1,7 +1,7 @@
 #!/bin/bash
 export ARB=$(pwd)
 source $ARB/include.sh # Call the include script so we can use our functions and variables
-
+ 
 # welcome and present list of options
 echo "Hello, welcome to A Repo Builder, glad you're here! Please choose from the following options so we can get started:"
 while true; do
@@ -16,22 +16,22 @@ echo "7: Quit"
 read option # read user input
     case $option in
     1)
-    source $builddir/add-repo.sh; break;;
+    source $ARB/add-repo.sh; break;;
     2)
-    export $ckupdate="true"
-    export $firstbuild="false"
+    export ckupdate=true
+    export firstbuild=false
     execbuild
     # find . -maxdepth 1 -type d \( ! -name . \) -exec bash -c "cd '{}' && sh build.sh" \;
     upload; break;;
     3)
-    source $builddir/rebuild.sh; break;;
+    source $ARB/rebuild.sh; break;;
     4)
     rbdb
     upload; break;;
     5)
-    source $builddir/add-pkg.sh; break;;
+    source $ARB/add-pkg.sh; break;;
     6)
-    source $builddir/remove-pkg.sh; break;;
+    source $ARB/remove-pkg.sh; break;;
     7)
     echo "Thanks for stopping by this script, have a nice day!"; exit;;
     *)

@@ -4,7 +4,7 @@ pkgname=$(basename "$PWD") # Defines the current directory name without path, wh
 set -e # Stops script if any errors are encountered
 
 checkpkg
-if [[ $ckupdate == "true" ]]; then #if update var is set to true then check for updates
+if [ "$ckupdate" = true ]; then #if update var is set to true then check for updates
   echo Checking $pkgname...
   if git reset --hard && git pull | grep -q 'Already up to date.'; then # Ends if a git folder hasn't changed
       echo "Up to date. Nothing to do for $pkgname."
@@ -19,7 +19,7 @@ if [[ $ckupdate == "true" ]]; then #if update var is set to true then check for 
 
         if [[ $? -eq 0 ]]; then
           echo "Package signed :)"
-          if [[ $firstbuild == "false" ]]; then
+          if [ $firstbuild = false ]; then
             rmold
           fi
           echo "Moving pkg to repo folder..."
@@ -45,7 +45,7 @@ if [[ $ckupdate == "true" ]]; then #if update var is set to true then check for 
       fi
   fi
 
-elif [[ $ckupdate == "false" ]]; then
+elif [ "$ckupdate" = false ]; then
   echo "Building $pkgname..."
   echo Starting makepkg...
   mkpkg
@@ -55,7 +55,7 @@ elif [[ $ckupdate == "false" ]]; then
 
     if [[ $? -eq 0 ]]; then
       echo "Package signed :)"
-      if [[ $firstbuild == "false" ]]; then
+      if [ $firstbuild = false ]; then
         rmold
       fi
       echo Moving pkg to repo folder...

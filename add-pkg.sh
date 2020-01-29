@@ -35,8 +35,7 @@ else
             case $yn in
                 [Yy]* ) exec 3<"$file" # Uses 3 to run the file inputs so you can still take regular inputs and thus be able to let makepkg install depends, courtesy of https://stackoverflow.com/a/35131166
                         while read -r -u 3 line; do
-                          cp $builddir/first-build.sh $builddir/$line
-                          cd $builddir/$line && sh first-build.sh && cd ..
+                            ## need to update this to match with new way of doing things, use $line
                         done
                         echo "Syncing with SSH server..."
                         upload
