@@ -1,0 +1,13 @@
+# /etc/systemd/system/builder@.service
+[Unit]
+Description=screen
+After=network.target
+
+[Service]
+Type=simple
+User=%i
+ExecStart=/usr/bin/screen -DmS build
+ExecStop=/usr/bin/screen -S build -X quit
+
+[Install]
+WantedBy=multi-user.target
