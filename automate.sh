@@ -4,10 +4,13 @@ export ckupdate=true
 export firstbuild=false
 date=$(date)
 
+echo
 echo "Automated repobuilder running on $date"
 # enter each folder and run build.sh
 execbuild
 # use rsync to upload/sync pkg folder on server
 upload
 # update list of newly updated pkgs on the website
-listupdate
+if [[ "$website" = true ]]; then
+  listupdate
+fi

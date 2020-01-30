@@ -6,7 +6,7 @@ read -a yourlist # takes user input as array
 
 for pkg in "${yourlist[@]}"; do
   echo "Pulling $pkg from AUR Git repo...."
-  git clone $aur/$pkg.git
+  ( cd $builddir && git clone $aur/$pkg.git )
   echo Done!
 done
 

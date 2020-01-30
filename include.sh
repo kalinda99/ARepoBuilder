@@ -67,7 +67,7 @@ function rmold {
     if [[ "$trash" = true ]]; then
       echo "Removing old version of $pkg..."
       trash-put $pkgdir/obs-ndi*.pkg.tar.xz*
-    elif [[ "$trash" = false ]]
+    elif [[ "$trash" = false ]]; then
       echo "Removing old version of $pkg..."
       rm $pkgdir/obs-ndi*.pkg.tar.xz*
     fi
@@ -76,7 +76,7 @@ function rmold {
     if [[ "$trash" = true ]]; then
       echo "Removing old version of $pkg..."
       trash-put $pkgdir/$pkg*.pkg.tar.xz*
-    elif [[ "$trash" = false ]]
+    elif [[ "$trash" = false ]]; then
       echo "Removing old version of $pkg..."
       rm $pkgdir/$pkg*.pkg.tar.xz*
     fi
@@ -133,7 +133,7 @@ function repoup {
 function rbdb {
   repo-add -s -v $pkgdir/$reponame.db.tar.gz $pkgdir/*.pkg.tar.xz
 
-  # one for unityhub because it has a dumb extension :|
+  # one for unityhub because it's missing the xz
   repo-add -s -v $pkgdir/$reponame.db.tar.gz $pkgdir/unityhub*.pkg.tar
 }
 

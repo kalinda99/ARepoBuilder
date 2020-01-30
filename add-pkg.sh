@@ -1,8 +1,5 @@
 #!/bin/bash
 
-builddir=/build/build # Defines path to the parent build folder
-source $builddir/include.sh # Call the include script so we can use our functions and variables
-
 echo What kind of packages do you want to add?
 echo 1: AUR packages
 echo 2: Other, including Git and local
@@ -14,7 +11,7 @@ if ! [[ $np =~ ^[1-3] ]] ; then
 
 else
     if [[ $np = 1 ]] ; then
-        source $builddir/add-aur.sh
+        source $ARB/add-aur.sh
     fi
 
     if [[ $np = 2 ]] ; then
@@ -25,7 +22,7 @@ else
         echo "Please enter the path and name of the text file with your package list:"
         read file
         while IFs='' read -r line || [[ -n "$line" ]]; do # courtesy of https://stackoverflow.com/a/10929511
-            git clone https://aur.archlinux.org/$line.git
+            ( cd $builddir && git clone https://aur.archlinux.org/$line.git )
         done < $file
         echo "The file contains the following packages:"
         cat $file
