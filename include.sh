@@ -6,20 +6,30 @@ export ARB=$(pwd)
 source $ARB/vars.sh # read user variables file
 export logs=$repodir/logs # Defines path to logs folder
 export aur="https://aur.archlinux.org"
-export CHROOT=$repodir/chroot
+# export CHROOT=$repodir/chroot
+export date=$(date)
+export b=$(tput bold) # Makes text written after it bold
+export n=$(tput sgr0) # and puts text written after it back to normal
 aur_url="https://aur.archlinux.org/packages"
 pkgname=$(basename "$PWD") # Defines the current directory name without path, which is the name of the pkg
-export date=$(date)
-dirlist=$(find $builddir -maxdepth 1 -type d \( ! -name . \) | sort)
 
 if [ $keychain = true ]; then
   eval `keychain --noask --eval $keyname` # use keychain so we don't need to enter a password for our server
 fi
 
 function execbuild {
+  dirlist=$(find $builddir -maxdepth 1 -type d \( ! -name . \) | sort)
   for d in $dirlist
   do
     ( cd "$d" && sh $ARB/build.sh )
+  done
+}
+
+function mvpkgs {
+  dirlist=$(find $builddir -maxdepth 1 -type d \( ! -name . \) | sort)
+  for d in $dirlist
+  do
+    ( cd "$d" && mv *.pkg.tar.xz* $pkgdir/ )
   done
 }
 
@@ -34,12 +44,7 @@ function siggy {
 
 function checkpkg {
   # create array in case there is more than one pkg file
-  if [ 'tsmuxer-ng-bin' == $pkgname ]; then
-    echo "Dummy package detected, making array..."
-    string=$(cat PKGBUILD | grep pkgname= | cut -c9- | tr -d "()" | tr -d "''" | tr -d '""' | tr -d "=")
-    read -r -a array <<< "$string" # make the string var into an array with each entry in pkgname
-
-  elif [ 'lib32-qt4' == $pkgname ]; then
+  if [ 'lib32-qt4' == $pkgname ]; then
     echo "$pkgname detected, you should build this in a clean chroot."
     echo "Yeah, I know, it's TODO."
 
@@ -48,46 +53,64 @@ function checkpkg {
   fi
 }
 
+function ckdepends {
+  # this function errors in a PKGBUILD has commented lines in its depends, need to find a way to fix this...
+  echo "Checking depends and makedepends for $pkgname..."
+  echo $(cat PKGBUILD | sed -n '/depends=(/{:start /)/!{N;b start};/^depends=*/p}' | egrep -v '(^[[:space:]]*#|^[[:space:]]*$)') >> depends
+  echo $(cat PKGBUILD | sed -n '/makedepends=(/{:start /)/!{N;b start};/^makedepends=*/p}' | egrep -v '(^[[:space:]]*#|^[[:space:]]*$)') >> depends
+  source $(pwd)/depends
+
+  deparr=( "${depends[@]/%>=*/}" "${makedepends[@]/%>=*/}" )
+  rm depends
+
+  for pkg in "${deparr[@]}"
+  do
+    printf "\nLooking for $pkg...\n"
+    if ! arch-nspawn $CHROOT/$USER pacman -Ss "^$pkg$"; then
+      echo "$pkg not found in repos, getting from AUR and adding to your repo..."
+      export ckupdate=false
+      if ( cd $builddir && git clone $aur/$pkg ); then
+        echo "Added $pkg, building it now"
+        ( cd $builddir/$pkg && sh $ARB/build.sh )
+      else
+        export firstbuild=true
+        echo "Oops, looks like you've already cloned $pkg, so let's build it now :)"
+        ( cd $buildir/$pkg && $ARB/build.sh )
+      fi
+      arch-nspawn $CHROOT/$USER pacman -Syy
+      echo "$pkg will be installed during makepkg"
+    else
+      echo "$pkg is in the repos, yay! It will install during makepkg :)"
+    fi
+  done
+}
+
 # remove the old package
 function rmold {
-  if [ 'tsmuxer-ng-bin' == $pkgname ]; then
-    for pkg in "${array[@]}"
-    do
-        if [[ "$trash" = true ]]; then
-          echo "Removing old version of $pkg..."
-          trash-put $pkgdir/$pkg*.pkg.tar.xz*
-        else
-          echo "Removing old version of $pkg..."
-          rm $pkgdir/$pkg*.pkg.tar.xz*
-        fi
-    done
-
   # This is needed because the obs-ndi built package name doesn't have -bin at the end :|
-  elif [ 'obs-ndi-bin' == $pkgname ]; then
+  if [ 'obs-ndi-bin' == $pkgname ]; then
     if [[ "$trash" = true ]]; then
-      echo "Removing old version of $pkg..."
+      echo "Removing old version of $pkgname..."
       trash-put $pkgdir/obs-ndi*.pkg.tar.xz*
     elif [[ "$trash" = false ]]; then
-      echo "Removing old version of $pkg..."
+      echo "Removing old version of $pkgname..."
       rm $pkgdir/obs-ndi*.pkg.tar.xz*
     fi
 
   else
     if [[ "$trash" = true ]]; then
-      echo "Removing old version of $pkg..."
-      trash-put $pkgdir/$pkg*.pkg.tar.xz*
+      echo "Removing old version of $pkgname..."
+      trash-put $pkgdir/$pkgname*.pkg.tar.xz*
     elif [[ "$trash" = false ]]; then
-      echo "Removing old version of $pkg..."
-      rm $pkgdir/$pkg*.pkg.tar.xz*
+      echo "Removing old version of $pkgname..."
+      rm $pkgdir/$pkgname*.pkg.tar.xz*
     fi
   fi
 }
 
 # run the chroot makepkg, done as a function so it can be easily changed later if I want
 function mkpkg {
-  makechrootpkg -r $CHROOT -- --clean
-
-  if [[ $? -eq 0 ]]; then # if the makepkg complete with a 0 exit code (meaning it worked), then carry on as normal, returning (telling the script that called this function) a 0 exit code.
+  if makechrootpkg -r $CHROOT -- --clean; then
     return 0
 
   else # if any other exit code, return a 1 exit code because it didn't work
@@ -143,7 +166,7 @@ function upload {
   if [[ "$knockon" = true ]]; then
     knock-ssh
   fi
-  rsync -rulgvz -e "ssh -p $port" --progress --delete $pkgdir/ $address:$sshpath | tee -a $logs/upload.log
+  rsync -rulgvzz -e "ssh -p $port" --progress --delete $pkgdir/ $address:$sshpath | tee -a $logs/upload.log
 }
 
  # update the newly updated pkg list on the website
@@ -180,6 +203,7 @@ function listupdate {
 }
 
 # export functions to subshells
+typeset -fx ckdepends
 typeset -fx execbuild
 typeset -fx sigpkg
 typeset -fx checkpkg
