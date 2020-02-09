@@ -20,25 +20,23 @@ else
 
     if [[ $np = 3 ]] ; then
         echo "Please enter the path and name of the text file with your package list:"
-        read file
+        read -e file
         while IFs='' read -r line || [[ -n "$line" ]]; do # courtesy of https://stackoverflow.com/a/10929511
+            echo $line
             ( cd $builddir && git clone https://aur.archlinux.org/$line.git )
         done < $file
-        echo "The file contains the following packages:"
-        cat $file
         while true; do # ask if user wants to build and upload the pkg now
-            read -p "Do you want to build these packages and add them to your repo now?" yn
+            read -p "Do you want to build these packages and add them to your repo now? " yn
             case $yn in
                 [Yy]* ) exec 3<"$file" # Uses 3 to run the file inputs so you can still take regular inputs and thus be able to let makepkg install depends, courtesy of https://stackoverflow.com/a/35131166
                         while read -r -u 3 line; do
-                            ( cd $line && sh $ARB/build.sh )    
+                            ( cd $builddir/$line && sh $ARB/build.sh )    
                         done
                         echo "Syncing with SSH server..."
-                        upload
-                        listupdate
+                        # upload
+                        # listupdate
                         echo "All done!"; break;;
-                [Nn]* ) rm $builddir/$line/first-build.sh
-                        echo "Understood, have a good day!"; exit;;
+                [Nn]* ) echo "Understood, have a good day!"; exit;;
                 * ) echo "Please answer yes or no.";;
             esac
         done

@@ -1,11 +1,11 @@
 #!/bin/bash
 
-echo Please answer the following questions
+echo "Please answer the following questions"
 echo
-echo The name of your repo?
+echo "What is the name of your repo?"
 read reponame
 while true; do
-    read -p "You have chosen $reponame as your reponame. Are you sure you want this? Y/n? You can also type A to abort and exit for now. " yna
+    read -p "You have chosen $b$reponame$n as your reponame. Are you sure you want this? Y/n? You can also type A to abort and exit for now. " yna
         case $yna in
             [Yy]* ) echo "export reponame=$reponame" >> $ARB/vars.sh; break;;
             [Nn]* ) read -p "Name of your repo?" reponame; continue;;
@@ -13,32 +13,33 @@ while true; do
             * ) echo Huh? Please choose either Y, N, or A.; continue;;
         esac
 done
-while true; do
-    echo "Okay, now we need the path to the repo folder on your system, WITHOUT the trailing /. Two folders will be created inside this path:"
-    echo "YOUR PATH/build is where packages will be built, each package will have its own folder."
-    echo "YOUR PATH/pkgs is where packages will go. Your remote server, if you're using one, will be an exact mirror of this folder."
-    echo ""
-    echo "Enter the path of your repo on your system:"
-    read repodir
-        while true; do
-        read -p "You've entered port $builddir for your repo path. Is this dorrect? " yna
-        case $yna in
-            [Yy]* ) mkdir $repodir/build
-                    mkdir $repodir/pkgs
-                    echo "export repodir=$repodir" >> $ARB/vars.sh
-                    echo "export pkgdir=$repodir/pkgs" >> $ARB/vars.sh
-                    echo "export builddir=$repodir/build" >> $ARB/vars.sh; break;;
-            [Nn]* ) read -p "Your repo path?" builddir; continue;;
-            [Aa]* ) echo Understood, have a nice day.; exit;;
-            * ) echo Huh? Please choose either Y, N, or A.; continue;;
-        esac
-done
+
+echo
+echo "Okay, now we need the path to the repo folder on your system, WITHOUT the trailing /. Two folders will be created inside this path:"
+echo "$b YOUR PATH/build$n is where packages will be built, each package will have its own folder."
+echo "$b YOUR PATH/pkgs$n is where packages will go. Your remote server, if you're using one, will be an exact mirror of this folder."
+echo
+echo "Enter the path of your repo on your system: "
+read -e repodir
+    while true; do
+    read -p "You've entered $b$repodir$n for your repo path. Is this dorrect? " yna
+    case $yna in
+        [Yy]* ) mkdir $repodir/build
+                mkdir $repodir/pkgs
+                echo "export repodir=$repodir" >> $ARB/vars.sh
+                echo "export pkgdir=$repodir/pkgs" >> $ARB/vars.sh
+                echo "export builddir=$repodir/build" >> $ARB/vars.sh; break;;
+        [Nn]* ) read -e -p "Your repo path? " repodir; continue;;
+        [Aa]* ) echo Understood, have a nice day.; exit;;
+        * ) echo Huh? Please choose either Y, N, or A.; continue;;
+    esac
+    done
 
 while true; do
 echo "Now, what is the source for $reponame?"
 echo "1) SSH (for online web server repos or LAN servers)"
 echo "2) Local path (a folder on $HOSTNAME)"
-echo "3) Nevermind, return to the previous menu"
+echo "3) Nevermind, return to the main menu"
 echo "4) I don't want to do this right now, abort and exit"
 read source
 
@@ -58,24 +59,26 @@ esac
 done
 
 if [ $source = "1" ]; then
+    echo
     echo "First thing's first - What port is your SSH server on? 22 is the default, but you may have changed it."
     read port
     while true; do
-        read -p "You've entered port $port for your SSH server. Is this dorrect? " yna
+        read -p "You've entered port $b$port$n for your SSH server. Is this dorrect? " yna
         case $yna in
             [Yy]* ) echo "export port=$port" >> $ARB/vars.sh; break;;
-            [Nn]* ) read -p "Your port number?" port; continue;;
+            [Nn]* ) read -p "Your port number? " port; continue;;
             [Aa]* ) echo Understood, have a nice day.; exit;;
             * ) echo Huh? Please choose either Y, N, or A.; continue;;
         esac
     done
-    echo "Now, enter the address of your SSH server in the following format: user@hostname.com"
+    echo
+    echo "Now, enter the address of your SSH server in the following format:$b user@hostname.com$n"
     read address
     while true; do
-        read -p "You've entered $address for your SSH address, is this correct? "
+        read -p "You've entered $b$address$n for your SSH address, is this correct? "
         case $yna in
             [Yy]* ) echo "export address='$address'" >> $ARB/vars.sh; break;;
-            [Nn]* ) read -p "What is your SSH address?" address; continue;;
+            [Nn]* ) read -p "What is your SSH address? " address; continue;;
             [Aa]* ) echo Understood, have a nice day.; exit;;
             * ) echo Huh? Please choose either Y, N, or A.; continue;;
         esac
@@ -85,9 +88,9 @@ if [ $source = "1" ]; then
     read -p "Have you setup keychain for SSH? " yna
     case $yna in
         [Yy]* ) echo "Good choice!"
-                echo "export keychain='true'" >> $ARB/vars.sh
+                echo "export keychain=true" >> $ARB/vars.sh
                 keychain="true"; break;;
-        [Nn]* ) echo "Cool, you can always set it up yourself by changing the keychain variable in $ARB/              vars.sh to true and adding a variable for keyname."
+        [Nn]* ) echo "Cool, if you set it up in the future you can always change the keychain variable in             $b$ARB/vars.sh$n to true and adding a variable for keyname."
                 echo "export keychain='false'" >> $ARB/vars.sh
                 keychain="false"; break;;
         [Aa]* ) echo "Alirghty, see you!"; exit;;
@@ -99,29 +102,31 @@ if [ $source = "1" ]; then
         echo "Please provide the name of your SSH key file, located in $HOME/.ssh by default. If you put it somewhere else, you MUST include the path." 
         read keyname
         while true; do
-        read -p "You've entered $keyname, is this correct? "
-        case $yna in
-            [Yy]* ) echo "export keyname='$keyname'" >> $ARB/vars.sh; break;;
-            [Nn]* ) read -p "What is your SSH key file name? It's located in $HOME/.ssh by default. If you put it somewhere else, you MUST include the path." keyname; continue;;
-            [Aa]* ) echo Understood, have a nice day.; exit;;
-            * ) echo Huh? Please choose either Y, N, or A.; continue;;
-        esac
+            read -p "You've entered $keyname, is this correct? "
+            case $yna in
+                [Yy]* ) echo "export keyname=$keyname" >> $ARB/vars.sh; break;;
+                [Nn]* ) read -p "What is your SSH key file name? It's located in $HOME/.ssh by default. If you put it somewhere else, you MUST include the path. " keyname; continue;;
+                [Aa]* ) echo Understood, have a nice day.; exit;;
+                * ) echo Huh? Please choose either Y, N, or A.; continue;;
+            esac
+        done
     fi
 
-    echo "I am now going to need the FULL PATH to your repo on your SSH server, entered like a normal Linux path. Please enter it below."
+    echo
+    echo "I am now going to need the$b FULL PATH$n to your repo on your SSH server, entered like a normal Linux path. Please enter it below."
     read sshpath
     while true; do
-        read -p "You've entered $sshpath. Is this right? "
+        read -p "You've entered $b$sshpath$n. Is this right? "
         case $yna in
             [Yy]* ) echo "export sshpath=$sshpath" >> $ARB/vars.sh; break;;
-            [Nn]* ) read -p "What is your SSH path?" sshpath; continue;;
+            [Nn]* ) read -p "What is your SSH path? " sshpath; continue;;
             [Aa]* ) echo "Understood, have a nice day."; exit;;
             * ) echo "Huh? Please choose either Y, N, or A."; continue;;
         esac
     done
 
     while true; do
-        read -p "Okay, almost done now! Lastly, are you using port knocking to access your remote server? "
+        read -p "Okay, almost done now! Lastly, are you using$b port knocking$n to access your remote server? "
         case $yna in
             [Yy]* ) echo "Nice, now I'm going to need to know your ports."
                     echo "export knockon=true" >> $ARB/vars.sh; break;;
@@ -140,8 +145,12 @@ if [ $source = "1" ]; then
         case "$yna" in
             [Yy]* ) echo "Thanks very much, that concludes the setup! Taking you back to the main menu..."
                     echo "export knockports='$knockports'" >> $ARB/vars.sh
+                    echo "alias knock-ssh="knock -v -d 300 $server $knockports"" >> $ARB/vars.sh
+                    echo "Before you start building, please make sure you've got a$b clean chroot$n setup as this program relies on that for making packages. See https://wiki.archlinux.org/index.php/DeveloperWiki:Building_in_a_clean_chroot for more info."
+                    echo "Returning to the main menu..."
+                    echo
                     source $ARB/arepobuilder; break;;
-            [Nn]* ) read -p "Please enter your ports seperated by spaces. " knockports
+            [Nn]* ) read -p "Please enter your ports seperated by spaces. " knockports; continue;;
             [Aa]* ) echo "Understood, have a nice day."; exit;;
             * ) echo "Huh? Please choose either Y, N, or A."; continue;;
         esac        
