@@ -16,12 +16,13 @@ if [ "$keychain" = true ]; then
   eval `keychain --noask --eval $keyname` # use keychain so we don't need to enter a password for our server
 fi
 
+# check for missing packages
 function missingpkgs {
   pkglist=$( ( cd $builddir && find . -maxdepth 1 -mindepth 1 -type d -printf '%h\0%d\0%p\n' | sort -t '\0' | awk -F '\0' '{print $3}' | tr -d "./" ) )
   for p in $pkglist
   do
     printf "\nLooking for $b$p$n...\n"
-    if test -f $pkgs/$p*.pkg.tar.xz; then
+    if test -f $pkgs/$p*.pkg.tar.xz; then # this doesn't worrk very well, it lists things it shouldn't, I have to find a better way to check this
       printf "\n$b$p$n exists, moving on...\n"
     else
       echo "Looks like $b$p$n isn't in your repo yet, adding to list in $b$ARB/missing-pkgs$n... " 
@@ -66,6 +67,7 @@ function checkpkg {
   fi
 }
 
+# this is buggy still, it adds packages it doesn't need to
 function ckdepends {
   chroot=$repodir/chroot
   echo "Checking depends and makedepends for $pkgname..."

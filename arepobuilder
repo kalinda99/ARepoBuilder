@@ -33,7 +33,7 @@ read option # read user input
     6)
     source $ARB/remove-pkg.sh; break;;
     7)
-    missingpkgs
+    missingpkgs ## this function needs work
     read -p "Do you want to build these packages now? " yna
     while true; do
       case $yna in
