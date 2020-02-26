@@ -1,7 +1,7 @@
 #!/bin/bash
 
 pkgname=$(basename "$PWD") # Defines the current directory name without path, which is the name of the pkg
-set -x # Stops script if any errors are encountered
+# set -x # Stops script if any errors are encountered
 
 # checkpkg
 git clean -fxd
