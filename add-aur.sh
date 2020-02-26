@@ -20,7 +20,9 @@ while true; do # ask if user wants to build and upload the pkg now
                 ( cd $builddir/$pkg && sh $ARB/build.sh )
                 echo "Syncing with SSH server..."
                 upload
-                listupdate
+                if [[ "$website" = true ]]; then
+                  listupdate
+                fi
               done
               break;;
       [Nn]* ) echo "Understood, have a good day!"; exit;;
