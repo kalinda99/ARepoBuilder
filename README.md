@@ -3,7 +3,7 @@
 
 Named after ~~or shamelessly stolen from~~ the awesome [aconfmgr](https://github.com/CyberShadow/aconfmgr), ARepoBuilder (ARB) is a BASH program for Arch Linux to make maintaining a custom repository easier through automation. Features include a systemd service and timer, package signing, and adding/removing packages from your repository. ARB mainly supports uploading to a remote web server via SSH, but there is an option for a local repo as well, although I haven't really fully implemented it yet.
 
-## DISCLIAMER
+## DISCLAIMER
 This is ALPHA software, it may break things or delete files inside your repo folder without you wanting it to! To mitigate this, you can change the `trash` variable in `vars.sh` to `true` so that [trash-put](https://github.com/andreafrancia/trash-cli) will be used instead of rm, just in case. Make sure the `trash-cli` package is installed to use it. 
 
 This may be coded very poorly. I started writing this to maintain my [own custom repo](https://aur.andontie.net/) sometime near the beginning of 2019 with little to no prior programming experience. I know a lot more now than I did then, but I'm sure that there are better ways of doing things than how I do here. I just want to say that I am open to any and all suggestions for improvements to this program and Shell scripting in general. Feel free to open an issue.
