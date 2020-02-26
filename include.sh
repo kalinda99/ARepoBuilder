@@ -2,7 +2,7 @@
 # This script contains all functions and variables and is sourced by other scripts
 
 # export variables so other scripts can use them
-export ARB=/home/kalinda/ARepoBuilder
+export ARB=$HOME/ARepoBuilder
 source $ARB/vars.sh # read user variables file
 export logs=$repodir/logs # Defines path to logs folder
 export aur="https://aur.archlinux.org"

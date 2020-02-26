@@ -43,7 +43,7 @@ case $option in
   echo "Okay!"; break;;
   4)
   echo "Sure thing, taking you back!"
-  source $ARB/arepobuilder; break;;
+  source $ARB/arepobuilder.sh; break;;
   5)
   echo "Okay, goodbye!"; break;;
   *)
@@ -65,7 +65,7 @@ read -p "Do you really want to rebuild all your packages, upload them, and updat
                   execbuild
                   upload; break;;
           [Nn]* ) echo "Okay, returning to the main menu..."
-                  source $ARB/arepobuilder; break;;
+                  source $ARB/arepobuilder.sh; break;;
           [Aa]* ) echo "Understood, goodbye!"; exit;;
           * ) echo Wha? Please choose either Y, N, or A.; continue
       esac
@@ -85,7 +85,7 @@ elif [ $option = "2" ]; then
   done
   echo "Syncing with SSH server..."
   upload
-  listupdate
+  # listupdate
   rm $builddir/rb-pkgs
 
 elif [ $option = "3" ]; then
@@ -100,6 +100,6 @@ elif [ $option = "3" ]; then
   done < $file
   echo "Syncing with SSH server..."
   upload
-  listupdate
+  # listupdate
 
 fi

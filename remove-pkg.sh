@@ -39,7 +39,7 @@ read option # read user choice
     echo "Sure, what is the name of the package you want to delete?"; break;;
     3)
     echo "Sure thing, taking you back!"
-    source $ARB/arepobuilder; break;;
+    source $ARB/arepobuilder.sh; break;;
     4)
     echo "Okay, goodbye!"; break;;
     *)
