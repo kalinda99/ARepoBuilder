@@ -33,8 +33,10 @@ else
                             ( cd $builddir/$line && sh $ARB/build.sh )    
                         done
                         echo "Syncing with SSH server..."
-                        # upload
-                        # listupdate
+                        upload
+                        if [[ "$website" = true ]]; then
+                            listupdate
+                        fi
                         echo "All done!"; break;;
                 [Nn]* ) echo "Understood, have a good day!"; exit;;
                 * ) echo "Please answer yes or no.";;
