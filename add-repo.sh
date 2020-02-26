@@ -22,7 +22,7 @@ echo
 echo "Enter the path of your repo on your system: "
 read -e repodir
     while true; do
-    read -p "You've entered $b$repodir$n for your repo path. Is this dorrect? " yna
+    read -p "You've entered $b$repodir$n for your repo path. Is this correct? " yna
     case $yna in
         [Yy]* ) mkdir $repodir/build
                 mkdir $repodir/pkgs
@@ -50,7 +50,7 @@ case $source in
     echo "You've chosen to use a path on $HOSTNAME, cool!"; break;;
     3)
     echo "Understood!"
-    source $ARB/arepobuilder; break;;
+    source $ARB/arepobuilder.sh; break;;
     4)
     echo Understood, have a nice day!; exit;;
     *)
@@ -59,14 +59,25 @@ esac
 done
 
 if [ $source = "1" ]; then
+    num='^[0-9]{8}$'
     echo
     echo "First thing's first - What port is your SSH server on? 22 is the default, but you may have changed it."
     read port
+    until [[ $port =~ ^[+]?[0-9] ]];
+    do
+      echo "Please enter only positive numbers."
+      read -p "Port number? " port
+    done
     while true; do
-        read -p "You've entered port $b$port$n for your SSH server. Is this dorrect? " yna
+        read -p "You've entered port $b$port$n for your SSH server. Is this correct? " yna
         case $yna in
             [Yy]* ) echo "export port=$port" >> $ARB/vars.sh; break;;
-            [Nn]* ) read -p "Your port number? " port; continue;;
+            [Nn]* ) read -p "Your port number? " port
+                    until [[ $port =~ ^[+]?[0-9] ]];
+                    do
+                      echo "Please enter only positive numbers."
+                      read -p "Port number? " port
+                    done; continue;;
             [Aa]* ) echo Understood, have a nice day.; exit;;
             * ) echo Huh? Please choose either Y, N, or A.; continue;;
         esac
@@ -132,7 +143,7 @@ if [ $source = "1" ]; then
                     echo "export knockon=true" >> $ARB/vars.sh; break;;
             [Nn]* ) echo "Awesome! Then that concludes the setup! Thanks for using ARB! Returning to the main         menu..."
                     echo "export knockon=false" >> $ARB/vars.sh
-                    source $ARB/arepobuilder; break;;
+                    source $ARB/arepobuilder.sh; break;;
             [Aa]* ) echo "Understood, have a nice day."; exit;;
             * ) echo "Huh? Please choose either Y, N, or A."; continue;;
         esac
@@ -149,7 +160,7 @@ if [ $source = "1" ]; then
                     echo "Before you start building, please make sure you've got a$b clean chroot$n setup as this program relies on that for making packages. See https://wiki.archlinux.org/index.php/DeveloperWiki:Building_in_a_clean_chroot for more info."
                     echo "Returning to the main menu..."
                     echo
-                    source $ARB/arepobuilder; break;;
+                    source $ARB/arepobuilder.sh; break;;
             [Nn]* ) read -p "Please enter your ports seperated by spaces. " knockports; continue;;
             [Aa]* ) echo "Understood, have a nice day."; exit;;
             * ) echo "Huh? Please choose either Y, N, or A."; continue;;
@@ -161,7 +172,7 @@ elif [ $source = "2" ]; then
     echo "Okay! What is your local path?"
     read local
     while true; do
-        read -p "You've entered $local for your repo path. Is this dorrect? " yna
+        read -p "You've entered $local for your repo path. Is this correct? " yna
         case $yna in
             [Yy]* ) echo "export path=$local" >> $ARB/vars.sh; break;;
             [Nn]* ) read -p "Your repo path?" port; continue;;
