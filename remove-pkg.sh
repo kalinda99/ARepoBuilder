@@ -72,12 +72,14 @@ if [ $option = "1" ]; then
     echo "Removing package from local folders..."
     if [[ "$trash" = true ]]; then
         trash-put $pkgs/${pkgarray[choice]}*.pkg.tar.xz
+        trash-put $pkgs/${pkgarray[choice]}*.pkg.tar.xz.sig
         echo "Removing ${pkgarray[choice]}'s build folder..."
-        trash-put -d ${pkgarray[choice]}        
-    elif [[ "$trash" = false ]]
+        trash-put -d $builddir/${pkgarray[choice]}        
+    elif [[ "$trash" = false ]]; then
         rm $pkgs/${pkgarray[choice]}*.pkg.tar.xz
+        rm $pkgs/${pkgarray[choice]}*.pkg.tar.xz.sig
         echo "Removing ${pkgarray[choice]}'s build folder..."
-        rm -rf ${pkgarray[choice]}
+        rm -rf $builddir/${pkgarray[choice]}
     fi
     echo "Removing from repo database..."
     repo-remove -s -v $pkgs/$reponame*.db.tar.gz ${pkgarray[choice]}

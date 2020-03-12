@@ -146,6 +146,15 @@ function repoup {
   if [ 'unityhub' == $pkgname ]; then
     repo-add -s -v $pkgs/$reponame.db.tar.gz $pkgs/unityhub*.pkg.tar
 
+  elif [ 'zoom' == $pkgname ]; then
+      if [[ "$trash" = true ]]; then
+        trash-put $pkgs/zoom*_orig*.pkg.tar.xz
+        repo-add -s -v $pkgs/$reponame.db.tar.gz $pkgs/zoom*.pkg.tar.xz
+      elif [[ "$trash" = false ]]; then
+        rm $pkgs/zoom*_orig*.pkg.tar.xz
+        repo-add -s -v $pkgs/$reponame.db.tar.gz $pkgs/zoom*.pkg.tar.xz
+      fi
+
   else
     repo-add -s -v $pkgs/$reponame.db.tar.gz $pkgs/$pkgname*.pkg.tar.xz
   fi
